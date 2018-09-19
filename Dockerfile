@@ -1,5 +1,5 @@
 # build stage
-FROM maven:3.5-jdk-8-alpine #as build-env
+FROM maven:3.5-jdk-8-alpined
 WORKDIR /java
 COPY . /java/
 RUN mvn clean package
