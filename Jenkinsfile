@@ -31,11 +31,16 @@ spec:
       checkout scm
       container(name: 'kaniko', shell: '/busybox/sh') {
         withEnv(['PATH+EXTRA=/busybox']) {
+            withCredentials([usernamePassword(credentialsId: '90fca861-088a-4043-a43b-acb4d97ea826', passwordVariable: 'password', usernameVariable: 'username')]) {
+    // some block
+
           sh '''#!/busybox/sh
-          /kaniko/executor -f `pwd`/Dockerfile -c `pwd` --insecure --skip-tls-verify --cache=true --destination=mydockerregistry:5000/myorg/myimage
+          /kaniko/executor -f `pwd`/Dockerfile -c `pwd`  --no-push
           '''
+            }
         }
       }
     }
   }
+}
 }
