@@ -22,6 +22,16 @@ spec:
     command:
     - /busybox/cat
     tty: true
+    volumeMounts:
+      - name: kaniko-secret
+        mountPath: /secret
+    env:
+      - name: GOOGLE_APPLICATION_CREDENTIALS
+        value: /secret/enginneringday-2bc3ba3b65ba.json   
+  volumes:
+    - name: kaniko-secret
+      secret:
+        secretName: kaniko-secret        
    
 """
   ) {
@@ -30,17 +40,17 @@ spec:
     stage('Build with Kaniko') {
       checkout scm
       container(name: 'kaniko', shell: '/busybox/sh') {
-        withEnv(['PATH+EXTRA=/busybox']) {
+        withEnv(['PATH+EXTRA=/busybox:/kaniko/']) {
             withCredentials([usernamePassword(credentialsId: '90fca861-088a-4043-a43b-acb4d97ea826', passwordVariable: 'password', usernameVariable: 'username')]) {
     // some block
 
           sh '''#!/busybox/sh
-          /kaniko/executor -f `pwd`/Dockerfile -c `pwd`  --no-push
+          export PATH=$PATH:/kaniko/dockder-credential-gcr
+          /kaniko/executor -f `pwd`/Dockerfile -c `pwd`  --destination=eu.gcr.io/enginneringday/apisample:latest
           '''
             }
         }
       }
     }
   }
-}
 }
