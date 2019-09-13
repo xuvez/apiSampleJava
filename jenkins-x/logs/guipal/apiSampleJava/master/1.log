@@ -1,0 +1,136 @@
+
+Showing logs for build [32mguipal-apisamplejava-master-1[0m stage [32mmeta-pipeline[0m and container [32mstep-credential-initializer-rmkfz[0m
+{"level":"warn","ts":1568374312.0925748,"logger":"fallback-logger","caller":"logging/config.go:69","msg":"Fetch GitHub commit ID from kodata failed: \"ref: refs/heads/master\" is not a valid GitHub commit ID"}
+{"level":"info","ts":1568374312.093086,"logger":"fallback-logger","caller":"creds-init/main.go:40","msg":"Credentials initialized."}
+
+Showing logs for build [32mguipal-apisamplejava-master-1[0m stage [32mmeta-pipeline[0m and container [32mstep-working-dir-initializer-bmfc6[0m
+{"level":"warn","ts":1568374314.565776,"logger":"fallback-logger","caller":"logging/config.go:69","msg":"Fetch GitHub commit ID from kodata failed: open /var/run/ko/HEAD: no such file or directory"}
+{"level":"info","ts":1568374314.5694275,"logger":"fallback-logger","caller":"bash/main.go:65","msg":"Successfully executed command \"mkdir -p /workspace/source\""}
+
+Showing logs for build [32mguipal-apisamplejava-master-1[0m stage [32mmeta-pipeline[0m and container [32mstep-place-tools[0m
+
+Showing logs for build [32mguipal-apisamplejava-master-1[0m stage [32mmeta-pipeline[0m and container [32mstep-git-source-meta-guipal-apisamplejava-maste-rjclf[0m
+{"level":"warn","ts":1568374331.6910684,"logger":"fallback-logger","caller":"logging/config.go:69","msg":"Fetch GitHub commit ID from kodata failed: \"ref: refs/heads/master\" is not a valid GitHub commit ID"}
+{"level":"info","ts":1568374332.7828622,"logger":"fallback-logger","caller":"git/git.go:102","msg":"Successfully cloned https://github.com/******/apiSampleJava.git @ 2a3d5f4921f85764ec099db30755becc668a6b7d in path /workspace/source"}
+
+Showing logs for build [32mguipal-apisamplejava-master-1[0m stage [32mmeta-pipeline[0m and container [32mstep-git-merge[0m
+Using SHAs from PULL_REFS=master:2a3d5f4921f85764ec099db30755becc668a6b7d
+WARNING: no SHAs to merge, falling back to initial cloned commit
+
+Showing logs for build [32mguipal-apisamplejava-master-1[0m stage [32mmeta-pipeline[0m and container [32mstep-merge-pull-refs[0m
+SKIP merge-pull-refs: Nothing to merge
+
+Showing logs for build [32mguipal-apisamplejava-master-1[0m stage [32mmeta-pipeline[0m and container [32mstep-create-effective-pipeline[0m
+Deleting and cloning the Jenkins X versions repo
+Cloning the Jenkins X versions repo https://github.com/jenkins-x/jenkins-x-versions.git with ref refs/heads/master to /builder/home/.**/jenkins-x-versions
+Effective pipeline written to jenkins-x-effective.yml
+
+Showing logs for build [32mguipal-apisamplejava-master-1[0m stage [32mmeta-pipeline[0m and container [32mstep-create-tekton-crds[0m
+running command: echo \$(**-release-version) > VERSION
+
+running command: mvn versions:set -DnewVersion=\$(cat VERSION)
+Picked up _JAVA_OPTIONS: -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -Dsun.zip.disableMemoryMapping=true -XX:+UseParallelGC -XX:MinHeapFreeRatio=5 -XX:MaxHeapFreeRatio=10 -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Xms10m -Xmx192m
+OpenJDK 64-Bit Server VM warning: If the number of processors is expected to increase from one, then you should configure the number of parallel GC threads appropriately using -XX:ParallelGCThreads=N
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------------< breackout:apiSample >-------------------------
+[INFO] Building apiSample 1.0-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- versions-maven-plugin:2.3:set (default-cli) @ apiSample ---
+[INFO] Searching for local aggregator root...
+[INFO] Local aggregation root: /workspace/source
+[INFO] Processing change of breackout:apiSample:1.0-SNAPSHOT -> 1.0.0
+[INFO] Processing breackout:apiSample
+[INFO]     Updating project breackout:apiSample
+[INFO]         from version 1.0-SNAPSHOT to 1.0.0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  19.361 s
+[INFO] Finished at: 2019-09-13T11:32:39Z
+[INFO] ------------------------------------------------------------------------
+
+running command: ** step tag --version \$(cat VERSION)
+Updating chart version in charts/apisamplejava/Chart.yaml to 1.0.0
+Updating repository in charts/apisamplejava/values.yaml to 996239638473.dkr.ecr.eu-central-1.amazonaws.com/******/apisamplejava
+Updating tag in charts/apisamplejava/values.yaml to 1.0.0
+Tag v1.0.0 created and pushed to remote origin
+
+PipelineActivity for ******-apiSampleJava-master-1
+Applying changes 
+upserted PipelineResource ******-apisamplejava-master for the git repository https://github.com/******/apiSampleJava.git
+upserted Task ******-apisamplejava-master-from-build-pack-1
+upserted Pipeline ******-apisamplejava-master-1
+created PipelineRun ******-apisamplejava-master-1
+created PipelineStructure ******-apisamplejava-master-1
+
+Showing logs for build [32mguipal-apisamplejava-master-1[0m stage [32mfrom-build-pack[0m and container [32mstep-credential-initializer-m6g5c[0m
+{"level":"warn","ts":1568374363.9180021,"logger":"fallback-logger","caller":"logging/config.go:69","msg":"Fetch GitHub commit ID from kodata failed: \"ref: refs/heads/master\" is not a valid GitHub commit ID"}
+{"level":"info","ts":1568374363.9184635,"logger":"fallback-logger","caller":"creds-init/main.go:40","msg":"Credentials initialized."}
+
+Showing logs for build [32mguipal-apisamplejava-master-1[0m stage [32mfrom-build-pack[0m and container [32mstep-working-dir-initializer-pk7hk[0m
+{"level":"warn","ts":1568374364.6247778,"logger":"fallback-logger","caller":"logging/config.go:69","msg":"Fetch GitHub commit ID from kodata failed: open /var/run/ko/HEAD: no such file or directory"}
+{"level":"info","ts":1568374364.6259224,"logger":"fallback-logger","caller":"bash/main.go:65","msg":"Successfully executed command \"mkdir -p /workspace/source\""}
+
+Showing logs for build [32mguipal-apisamplejava-master-1[0m stage [32mfrom-build-pack[0m and container [32mstep-place-tools[0m
+
+Showing logs for build [32mguipal-apisamplejava-master-1[0m stage [32mfrom-build-pack[0m and container [32mstep-git-source-guipal-apisamplejava-master-z7tmm[0m
+{"level":"warn","ts":1568374370.634931,"logger":"fallback-logger","caller":"logging/config.go:69","msg":"Fetch GitHub commit ID from kodata failed: \"ref: refs/heads/master\" is not a valid GitHub commit ID"}
+{"level":"info","ts":1568374371.7027264,"logger":"fallback-logger","caller":"git/git.go:102","msg":"Successfully cloned https://github.com/******/apiSampleJava.git @ v1.0.0 in path /workspace/source"}
+
+Showing logs for build [32mguipal-apisamplejava-master-1[0m stage [32mfrom-build-pack[0m and container [32mstep-git-merge[0m
+Using SHAs from PULL_REFS=master:2a3d5f4921f85764ec099db30755becc668a6b7d
+WARNING: no SHAs to merge, falling back to initial cloned commit
+
+Showing logs for build [32mguipal-apisamplejava-master-1[0m stage [32mfrom-build-pack[0m and container [32mstep-setup-jx-git-credentials[0m
+Generated Git credentials file /workspace/xdg_config/git/credentials
+
+Showing logs for build [32mguipal-apisamplejava-master-1[0m stage [32mfrom-build-pack[0m and container [32mstep-build-mvn-deploy[0m
+Picked up _JAVA_OPTIONS: -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -Dsun.zip.disableMemoryMapping=true -XX:+UseParallelGC -XX:MinHeapFreeRatio=5 -XX:MaxHeapFreeRatio=10 -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Xms10m -Xmx192m
+OpenJDK 64-Bit Server VM warning: If the number of processors is expected to increase from one, then you should configure the number of parallel GC threads appropriately using -XX:ParallelGCThreads=N
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------------< breackout:apiSample >-------------------------
+[INFO] Building apiSample 1.0.0
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:3.0.0:clean (default-clean) @ apiSample ---
+[INFO] 
+[INFO] --- maven-resources-plugin:3.0.1:resources (default-resources) @ apiSample ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /workspace/source/src/main/resources
+[INFO] skip non existing resourceDirectory /workspace/source/src/main/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.7.0:compile (default-compile) @ apiSample ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /workspace/source/target/classes
+[INFO] 
+[INFO] --- maven-resources-plugin:3.0.1:testResources (default-testResources) @ apiSample ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /workspace/source/src/test/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.7.0:testCompile (default-testCompile) @ apiSample ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- maven-surefire-plugin:3.0.0-M1:test (default-test) @ apiSample ---
+[INFO] No tests to run.
+[INFO] 
+[INFO] --- maven-jar-plugin:3.0.2:jar (default-jar) @ apiSample ---
+[INFO] Building jar: /workspace/source/target/apiSample-1.0.0.jar
+[INFO] 
+[INFO] --- spring-boot-maven-plugin:2.0.1.RELEASE:repackage (default) @ apiSample ---
+[INFO] 
+[INFO] --- maven-install-plugin:2.5.2:install (default-install) @ apiSample ---
+[INFO] Installing /workspace/source/target/apiSample-1.0.0.jar to /root/.mvnrepository/breackout/apiSample/1.0.0/apiSample-1.0.0.jar
+[INFO] Installing /workspace/source/pom.xml to /root/.mvnrepository/breackout/apiSample/1.0.0/apiSample-1.0.0.pom
+[INFO] 
+[INFO] --- maven-deploy-plugin:2.8.2:deploy (default-deploy) @ apiSample ---
+[INFO] Using alternate deployment repository nexus::default::http://nexus/repository/maven-releases/
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  20.112 s
+[INFO] Finished at: 2019-09-13T11:33:15Z
+[INFO] ------------------------------------------------------------------------
