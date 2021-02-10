@@ -52,7 +52,7 @@ pipeline {
             steps {
                 echo "${GIT_URL} - ${GIT_BRANCH}"
                 // git branch: "${GIT_BRANCH}",
-                git branch: "testing",
+                git branch: "${GIT_BRANCH}",
                         url: "${GIT_URL}"
 
                 echo "Finished"
