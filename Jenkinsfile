@@ -40,7 +40,7 @@ pipeline {
     }
 
     parameters {
-        string (name: 'GIT_BRANCH', defaultValue: 'testing',  description: 'Git branch to build')
+        string (name: 'GIT_BRANCH', defaultValue: 'origin/testing',  description: 'Git branch to build')
     }
 
     agent any
@@ -51,12 +51,13 @@ pipeline {
         stage('Git clone') {
             steps {
                 script {
-                    BRANCH = "${GIT_BRANCH}".split('/').remove(0).join('/')
+                    //BRANCH = "${GIT_BRANCH}".split('/').remove(0).join('/')
+                    BRANCH = "${GIT_BRANCH}".split('/').drop(0).join('/')
                 }
                 sh 'printenv'
                 echo "${GIT_URL} - ${GIT_BRANCH} - ${BRANCH}"
                 // git branch: "${GIT_BRANCH}",
-                git branch: "${GIT_BRANCH}",
+                git branch: "${BRANCH}",
                         url: "${GIT_URL}"
 
                 echo "Finished"
