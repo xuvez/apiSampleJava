@@ -29,6 +29,7 @@ pipeline {
     environment {
         IMAGE_NAME = 'adidas'
         CONTAINER_PORT = 8080
+        TEST_PORT = 8081
 
         GIT_URL = 'https://github.com/xuvez/apiSampleJava.git'
 
@@ -71,7 +72,7 @@ pipeline {
                 echo "Running tests"
 
                 echo "Starting ${IMAGE_NAME} container"
-                sh "docker run --detach --name ${CONTAINER_NAME} --rm --publish ${CONTAINER_PORT}:80 ${DOCKER_REG}/${IMAGE_NAME}:${BUILD_ID}"
+                sh "docker run --detach --name ${CONTAINER_NAME} --rm --publish ${TEST_PORT}:${CONTAINER_PORT} ${DOCKER_REG}/${IMAGE_NAME}:${BUILD_ID}"
 
                 script {
                     host_ip = sh(returnStdout: true, script: '/sbin/ip route | awk \'/default/ { print $3 ":${CONTAINER_PORT}" }\'')
