@@ -49,9 +49,10 @@ pipeline {
     stages {
 
         stage('Git clone') {
+
+            BRANCH = ${GIT_BRANCH}.split('/').remove(0).join('/')
             steps {
                 sh 'printenv'
-                string BRANCH = ${GIT_BRANCH}.split('/').remove(0).join('/')
                 echo "${GIT_URL} - ${GIT_BRANCH} - ${BRANCH}"
                 // git branch: "${GIT_BRANCH}",
                 git branch: "${GIT_BRANCH}",
