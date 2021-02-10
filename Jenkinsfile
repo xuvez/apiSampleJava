@@ -28,11 +28,12 @@ pipeline {
     // Some global default variables
     environment {
         IMAGE_NAME = 'adidas'
-        TEST_LOCAL_PORT = 8817
+        CONTAINER_PORT = 8080
 
         GIT_URL = 'https://github.com/xuvez/apiSampleJava.git'
 
         DOCKER_REG = 'eu.gcr.io/bq-it-1358'
+        CONTAINER_NAME = 'adidas'
 
         URL_DEV = 'http://'
         URL_STA = ''
@@ -70,10 +71,10 @@ pipeline {
                 echo "Running tests"
 
                 echo "Starting ${IMAGE_NAME} container"
-                sh "docker run --detach --name ${ID} --rm --publish ${TEST_LOCAL_PORT}:80 ${DOCKER_REG}/${IMAGE_NAME}:${BUILD_ID}"
+                sh "docker run --detach --name ${CONTAINER_NAME} --rm --publish ${CONTAINER_PORT}:80 ${DOCKER_REG}/${IMAGE_NAME}:${BUILD_ID}"
 
                 script {
-                    host_ip = sh(returnStdout: true, script: '/sbin/ip route | awk \'/default/ { print $3 ":${TEST_LOCAL_PORT}" }\'')
+                    host_ip = sh(returnStdout: true, script: '/sbin/ip route | awk \'/default/ { print $3 ":${CONTAINER_PORT}" }\'')
                 }
             }
         }
@@ -87,7 +88,7 @@ pipeline {
         stage('Publish Docker') {
             steps {
                 echo "Stop and remove container"
-                sh "docker stop ${ID}"
+                sh "docker stop ${CONTAINER_NAME}"
 
                 echo "Pushing ${DOCKER_REG}/${IMAGE_NAME}:${BUILD_ID} image to registry"
                 sh "${WORKSPACE}/build.sh --push --registry ${DOCKER_REG} --tag ${BUILD_ID} --docker_usr ${DOCKER_USR} --docker_psw ${DOCKER_PSW}"
