@@ -51,13 +51,9 @@ pipeline {
         stage('Git clone') {
             steps {
                 script {
-                    //BRANCH = "${GIT_BRANCH}".split('/').remove(0).join('/')
-                    test = "a/b/c/d".split('/', 2)
-                    test2 = "a/b/c/d".split('/', 1)
+                    // Remove "origin/" from branch
                     BRANCH = "${GIT_BRANCH}".split('/', 2)[1]
                 }
-                sh 'printenv'
-                echo "${GIT_URL} - ${GIT_BRANCH} - ${BRANCH} - ${test} - ${test2}"
                 // git branch: "${GIT_BRANCH}",
                 git branch: "${BRANCH}",
                         url: "${GIT_URL}"
@@ -69,12 +65,12 @@ pipeline {
         stage('Build and tests') {
             steps {
                 echo "Building application and Docker image"
-                sh "docker build -t ${DOCKER_REG}/${IMAGE_NAME}:${DOCKER_TAG} ."
+                sh "docker build -t ${DOCKER_REG}/${IMAGE_NAME}:${BUILD_ID} ."
 
                 echo "Running tests"
 
                 echo "Starting ${IMAGE_NAME} container"
-                sh "docker run --detach --name ${ID} --rm --publish ${TEST_LOCAL_PORT}:80 ${DOCKER_REG}/${IMAGE_NAME}:${DOCKER_TAG}"
+                sh "docker run --detach --name ${ID} --rm --publish ${TEST_LOCAL_PORT}:80 ${DOCKER_REG}/${IMAGE_NAME}:${BUILD_ID}"
 
                 script {
                     host_ip = sh(returnStdout: true, script: '/sbin/ip route | awk \'/default/ { print $3 ":${TEST_LOCAL_PORT}" }\'')
@@ -93,8 +89,8 @@ pipeline {
                 echo "Stop and remove container"
                 sh "docker stop ${ID}"
 
-                echo "Pushing ${DOCKER_REG}/${IMAGE_NAME}:${DOCKER_TAG} image to registry"
-                sh "${WORKSPACE}/build.sh --push --registry ${DOCKER_REG} --tag ${DOCKER_TAG} --docker_usr ${DOCKER_USR} --docker_psw ${DOCKER_PSW}"
+                echo "Pushing ${DOCKER_REG}/${IMAGE_NAME}:${BUILD_ID} image to registry"
+                sh "${WORKSPACE}/build.sh --push --registry ${DOCKER_REG} --tag ${BUILD_ID} --docker_usr ${DOCKER_USR} --docker_psw ${DOCKER_PSW}"
             }
         }
 
