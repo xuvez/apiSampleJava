@@ -40,7 +40,7 @@ pipeline {
     }
 
     parameters {
-        string (name: 'GIT_BRANCH',           defaultValue: 'master',  description: 'Git branch to build')
+        string (name: 'GIT_BRANCH', defaultValue: 'testing',  description: 'Git branch to build')
     }
 
     agent any
