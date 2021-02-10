@@ -43,14 +43,14 @@ pipeline {
         string (name: 'GIT_BRANCH',           defaultValue: 'master',  description: 'Git branch to build')
     }
 
-    agent { any }
+    agent any
 
     // Pipeline stages
     stages {
 
         stage('Git clone') {
             steps {
-                git branch: ${GIT_BRANCH},
+                git branch: "${GIT_BRANCH}",
                         url: "${GIT_URL}"
             }
         }
