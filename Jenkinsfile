@@ -52,7 +52,7 @@ pipeline {
             steps {
                 script {
                     //BRANCH = "${GIT_BRANCH}".split('/').remove(0).join('/')
-                    BRANCH = "${GIT_BRANCH}".split('/').tail()
+                    BRANCH = "${GIT_BRANCH}".split('/', 2)
                 }
                 sh 'printenv'
                 echo "${GIT_URL} - ${GIT_BRANCH} - ${BRANCH}"
