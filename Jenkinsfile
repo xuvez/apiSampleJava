@@ -54,6 +54,8 @@ pipeline {
                 // git branch: "${GIT_BRANCH}",
                 git branch: "origin/testing",
                         url: "${GIT_URL}"
+
+                echo "Finished"
             }
         }
 
