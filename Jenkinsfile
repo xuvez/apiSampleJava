@@ -72,12 +72,8 @@ pipeline {
         }
 
         stage('Local tests') {
-            parallel {
-                stage('Curl http_code') {
-                    steps {
-                        curlRun ("http://${host_ip}")
-                    }
-                }
+            steps {
+                curlRun ("http://${host_ip}")
             }
         }
 
@@ -102,10 +98,8 @@ pipeline {
         }
 
         stage('Dev tests') {
-            stage('Curl http_code') {
-                steps {
-                    curlTest (namespace, 'http_code')
-                }
+            steps {
+                curlTest (namespace)
             }
         }
 
@@ -122,12 +116,8 @@ pipeline {
 
         // Run the 3 tests on the deployed Kubernetes pod and service
         stage('Staging tests') {
-            parallel {
-                stage('Curl http_code') {
-                    steps {
-                        curlTest (namespace)
-                    }
-                }
+            steps {
+                curlTest (namespace)
             }
         }
 
@@ -170,10 +160,8 @@ pipeline {
                 expression { DEPLOY_PROD == true }
             }
 
-            stage('Curl http_code') {
-                steps {
-                    curlTest (namespace)
-                }
+            steps {
+                curlTest (namespace)
             }
         }
     }
