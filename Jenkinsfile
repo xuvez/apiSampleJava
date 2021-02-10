@@ -52,7 +52,7 @@ pipeline {
             steps {
                 script {
                     //BRANCH = "${GIT_BRANCH}".split('/').remove(0).join('/')
-                    test = "a/b/c/d".split('/', 2
+                    test = "a/b/c/d".split('/', 2)
                     test2 = "a/b/c/d".split('/', 1)
                     BRANCH = "${GIT_BRANCH}".split('/', 2)[1]
                 }
