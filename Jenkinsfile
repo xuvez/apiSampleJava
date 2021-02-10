@@ -52,10 +52,12 @@ pipeline {
             steps {
                 script {
                     //BRANCH = "${GIT_BRANCH}".split('/').remove(0).join('/')
-                    BRANCH = "${GIT_BRANCH}".split('/', 2)
+                    test = "a/b/c/d".split('/', 2
+                    test2 = "a/b/c/d".split('/', 1)
+                    BRANCH = "${GIT_BRANCH}".split('/', 2)[1]
                 }
                 sh 'printenv'
-                echo "${GIT_URL} - ${GIT_BRANCH} - ${BRANCH}"
+                echo "${GIT_URL} - ${GIT_BRANCH} - ${BRANCH} - ${test} - ${test2}"
                 // git branch: "${GIT_BRANCH}",
                 git branch: "${BRANCH}",
                         url: "${GIT_URL}"
