@@ -50,6 +50,7 @@ pipeline {
 
         stage('Git clone') {
             steps {
+                echo "${GIT_URL} - ${GIT_BRANCH}"
                 git branch: "${GIT_BRANCH}",
                         url: "${GIT_URL}"
             }
