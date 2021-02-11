@@ -85,7 +85,15 @@ pipeline {
         }
 
         stage('Local tests') {
+
             steps {
+                timeout(time: 1, unit: 'MINUTES') {
+                    waitUntil {
+                        script {
+                            sh "nc -z -v localhost ${TEST_PORT}"
+                        }
+                    }
+                }
                 curlRun ("http://${host_ip}")
             }
         }
