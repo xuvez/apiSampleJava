@@ -152,7 +152,7 @@ pipeline {
         // Run the 3 tests on the deployed Kubernetes pod and service
         stage('Staging tests') {
             steps {
-                echo "TODO: test"
+                echo "TODO: test3"
                 //curlTest (namespace)
             }
         }
