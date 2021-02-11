@@ -124,7 +124,7 @@ pipeline {
                 script {
                     namespace = 'test-dev'
 
-                    error "Seguir"
+                    echo "Deploying application ${IMAGE_NAME}:${DOCKER_TAG} to ${namespace} namespace"
                 }
             }
         }
