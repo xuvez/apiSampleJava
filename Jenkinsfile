@@ -1,15 +1,23 @@
-/*
-    Run a curl against a given url
- */
-def curlRun (url) {
+def curlUp (url) {
     script {
-        echo "Getting HTTP response code on ${url}"
+        echo "Waiting for response on ${url}"
         def result, status = sh (
-            returnStdout: true,
             returnStatus: true,
             script: "curl --output /dev/null --silent --connect-timeout 5 --max-time 5 --retry 5 --retry-delay 5 --retry-max-time 30 --write-out \"%{http_code}\" ${url}"
         )
-        echo "Result (http_code): ${result} - ${status}"
+        echo "Result (return_code): ${result}"
+        return (result == 0)
+    }
+}
+
+def curlResponseCode (url) {
+    script {
+        echo "Getting HTTP response code on ${url}"
+        def result = sh (
+            returnStdout: true,
+            script: "curl --output /dev/null --silent --connect-timeout 5 --max-time 5 --retry 5 --retry-delay 5 --retry-max-time 30 --write-out \"%{http_code}\" ${url}"
+        )
+        echo "Result (http_code): ${result}"
         return (result == 200)
     }
 }
@@ -91,14 +99,11 @@ pipeline {
             steps {
                 timeout(time: 1, unit: 'MINUTES') {
                     waitUntil {
-                        // script {
-                        //     def result = sh script: "nc -z -v localhost ${TEST_PORT}",
-                        //                  returnStatus: true
-                        //     return (result == 0)
-                        // }
-                        curlRun ("http://${host_ip}")
+                        curlUp ("http://${host_ip}")
                     }
                 }
+
+                curlResponseCode(url)
             }
         }
 
