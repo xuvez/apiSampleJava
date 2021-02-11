@@ -91,7 +91,7 @@ pipeline {
                     waitUntil {
                         script {
                             def result = sh "nc -z -v localhost ${TEST_PORT}"
-                            return (r == 0)
+                            return (result == 0)
                         }
                     }
                 }
