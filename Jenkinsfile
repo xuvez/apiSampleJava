@@ -18,7 +18,9 @@ def curlResponseCode (url) {
             script: "curl --output /dev/null --silent --connect-timeout 5 --max-time 5 --retry 5 --retry-delay 5 --retry-max-time 30 --write-out \"%{http_code}\" ${url}"
         )
         echo "Result (http_code): ${result}"
-        return (result == 200)
+        if (result != 200) {
+            error "Response Code is not 200"
+        }
     }
 }
 
