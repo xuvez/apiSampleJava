@@ -3,3 +3,6 @@ charts/
 NOTICE
 LICENSE
 README.md
+.git
+.gitignore
+Jenkinsfile
