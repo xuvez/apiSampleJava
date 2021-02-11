@@ -24,6 +24,16 @@ def curlResponseCode (url) {
     }
 }
 
+def deployEnvironment(namespace, deployment_name, container_name, image) {
+    echo "Deploying application ${image} to ${namespace} namespace"
+    sh script: "kubectl --namespace=${namespace} set image deployment/${deployment_name} ${container_name}=${image}"
+
+    // Wait until deployed or timeout
+    timeout(time: 1, unit: 'MINUTES') {
+        sh script: "kubectl --namespace=${namespace} rollout status deployment ${deployment_name}"
+    }
+}
+
 pipeline {
 
     options {
@@ -85,8 +95,9 @@ pipeline {
 
         stage('Build and tests') {
             steps {
+                IMAGE = "${DOCKER_REG}/${IMAGE_NAME}:${BUILD_ID}"
                 echo "Building application and Docker image"
-                sh "docker build -t ${DOCKER_REG}/${IMAGE_NAME}:${BUILD_ID} ."
+                sh "docker build -t ${IMAGE} ."
 
                 echo "Running tests"
 
@@ -94,7 +105,7 @@ pipeline {
                 sh "[ -z \"\$(docker ps -a | grep ${CONTAINER_NAME} 2>/dev/null)\" ] || docker rm -f ${CONTAINER_NAME}"
 
                 echo "Starting ${IMAGE_NAME} container"
-                sh "docker run --detach --name ${CONTAINER_NAME} --rm --publish ${TEST_PORT}:${CONTAINER_PORT} ${DOCKER_REG}/${IMAGE_NAME}:${BUILD_ID}"
+                sh "docker run --detach --name ${CONTAINER_NAME} --rm --publish ${TEST_PORT}:${CONTAINER_PORT} ${IMAGE}"
 
                 script {
                     // host_ip = sh(returnStdout: true, script: '/sbin/ip route | awk \'/default/ { print $3 ":${TEST_PORT}" }\'')
@@ -121,24 +132,14 @@ pipeline {
                 echo "Stop and remove container"
                 sh "docker stop ${CONTAINER_NAME}"
 
-                echo "Pushing ${DOCKER_REG}/${IMAGE_NAME}:${BUILD_ID} image to registry"
-                sh "docker push ${DOCKER_REG}/${IMAGE_NAME}:${BUILD_ID}"
+                echo "Pushing ${IMAGE} image to registry"
+                sh "docker push ${IMAGE}"
             }
         }
 
         stage('Deploy to dev') {
             steps {
-                script {
-                    namespace = 'test-dev'
-
-                    echo "Deploying application ${DOCKER_REG}/${IMAGE_NAME}:${BUILD_ID} to ${namespace} namespace"
-                    sh script: "kubectl --namespace=${NAMESPACE_DEV} set image deployment/${DEPLOYMENT_NAME} ${CONTAINER_NAME}=${DOCKER_REG}/${IMAGE_NAME}:${BUILD_ID}"
-
-                    // Wait until deployed or timeout
-                    timeout(time: 1, unit: 'MINUTES') {
-                        sh script: "kubectl --namespace=${NAMESPACE_DEV} rollout status deployment ${DEPLOYMENT_NAME}"
-                    }
-                }
+                deployEnvironment(NAMESPACE_DEV, DEPLOYMENT_NAME, CONTAINER_NAME, IMAGE)
             }
         }
 
@@ -152,10 +153,13 @@ pipeline {
         stage('Deploy to staging') {
             steps {
                 script {
-                    namespace = 'test-sta'
-
                     echo "Deploying application ${DOCKER_REG}/${IMAGE_NAME}:${BUILD_ID} to ${namespace} namespace"
+                    sh script: "kubectl --namespace=${NAMESPACE_STA} set image deployment/${DEPLOYMENT_NAME} ${CONTAINER_NAME}=${DOCKER_REG}/${IMAGE_NAME}:${BUILD_ID}"
 
+                    // Wait until deployed or timeout
+                    timeout(time: 1, unit: 'MINUTES') {
+                        sh script: "kubectl --namespace=${NAMESPACE_STA} rollout status deployment ${DEPLOYMENT_NAME}"
+                    }
                 }
             }
         }
@@ -193,10 +197,13 @@ pipeline {
 
             steps {
                 script {
-                    DEPLOY_PROD = true
-                    namespace = 'test-prod'
-
                     echo "Deploying application ${DOCKER_REG}/${IMAGE_NAME}:${BUILD_ID} to ${namespace} namespace"
+                    sh script: "kubectl --namespace=${NAMESPACE_PROD} set image deployment/${DEPLOYMENT_NAME} ${CONTAINER_NAME}=${DOCKER_REG}/${IMAGE_NAME}:${BUILD_ID}"
+
+                    // Wait until deployed or timeout
+                    timeout(time: 1, unit: 'MINUTES') {
+                        sh script: "kubectl --namespace=${NAMESPACE_PROD} rollout status deployment ${DEPLOYMENT_NAME}"
+                    }
                 }
             }
         }
