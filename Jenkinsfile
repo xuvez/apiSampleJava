@@ -90,8 +90,8 @@ pipeline {
                 timeout(time: 1, unit: 'MINUTES') {
                     waitUntil {
                         script {
-                            def result = sh "nc -z -v localhost ${TEST_PORT}",
-                                         returnStatus:true
+                            def result = sh script: "nc -z -v localhost ${TEST_PORT}",
+                                         returnStatus: true
                             return (result == 0)
                         }
                     }
