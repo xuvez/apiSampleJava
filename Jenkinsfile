@@ -95,7 +95,7 @@ pipeline {
 
         stage('Build and tests') {
             steps {
-                IMAGE = "${DOCKER_REG}/${IMAGE_NAME}:${BUILD_ID}"
+                def IMAGE = "${DOCKER_REG}/${IMAGE_NAME}:${BUILD_ID}"
                 echo "Building application and Docker image"
                 sh "docker build -t ${IMAGE} ."
 
