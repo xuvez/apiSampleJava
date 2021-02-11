@@ -149,7 +149,7 @@ pipeline {
         // Run the 3 tests on the deployed Kubernetes pod and service
         stage('Staging tests') {
             steps {
-                curlTest (namespace)
+                //curlTest (namespace)
             }
         }
 
@@ -193,7 +193,7 @@ pipeline {
             }
 
             steps {
-                curlTest (namespace)
+                //curlTest (namespace)
             }
         }
     }
