@@ -160,7 +160,7 @@ pipeline {
         // Wait for user manual approval
         stage('Go for Production?') {
             when {
-                environment name: 'BRANCH', value: 'master'
+                expression { BRANCH == 'master' }
             }
 
             steps {
