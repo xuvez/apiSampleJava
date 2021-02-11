@@ -141,8 +141,7 @@ pipeline {
 
         stage('Dev tests') {
             steps {
-                echo "TODO: test"
-                // curlTest (namespace)
+                curlResponseCode(URL_DEV)
             }
         }
 
@@ -155,8 +154,7 @@ pipeline {
         // Run the 3 tests on the deployed Kubernetes pod and service
         stage('Staging tests') {
             steps {
-                echo "TODO: test3"
-                //curlTest (namespace)
+                curlResponseCode(URL_STA)
             }
         }
 
@@ -195,8 +193,7 @@ pipeline {
             }
 
             steps {
-                echo "TODO: test"
-                //curlTest (namespace)
+                curlResponseCode(URL_PROD)
             }
         }
     }
