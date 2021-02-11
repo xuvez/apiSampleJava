@@ -4,11 +4,12 @@
 def curlRun (url) {
     script {
         echo "Getting HTTP response code on ${url}"
-            def result = sh (
-                returnStdout: true,
-                script: "curl --output /dev/null --silent --connect-timeout 5 --max-time 5 --retry 5 --retry-delay 5 --retry-max-time 30 --write-out \"%{http_code}\" ${url}"
+        def result, status = sh (
+            returnStdout: true,
+            returnStatus: true,
+            script: "curl --output /dev/null --silent --connect-timeout 5 --max-time 5 --retry 5 --retry-delay 5 --retry-max-time 30 --write-out \"%{http_code}\" ${url}"
         )
-        echo "Result (http_code): ${result}"
+        echo "Result (http_code): ${result} - ${status}"
         return (result == 200)
     }
 }
