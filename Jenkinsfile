@@ -124,7 +124,7 @@ pipeline {
                 script {
                     namespace = 'test-dev'
 
-                    echo "Deploying application ${IMAGE_NAME}:${DOCKER_TAG} to ${namespace} namespace"
+                    echo "Deploying application ${DOCKER_REG}/${IMAGE_NAME}:${BUILD_ID} to ${namespace} namespace"
                 }
             }
         }
@@ -140,7 +140,7 @@ pipeline {
                 script {
                     namespace = 'test-sta'
 
-                    echo "Deploying application ${IMAGE_NAME}:${DOCKER_TAG} to ${namespace} namespace"
+                    echo "Deploying application ${DOCKER_REG}/${IMAGE_NAME}:${BUILD_ID} to ${namespace} namespace"
 
                 }
             }
@@ -156,7 +156,7 @@ pipeline {
         // Wait for user manual approval
         stage('Go for Production?') {
             when {
-                environment name: 'GIT_BRANCH', value: 'master'
+                environment name: 'BRANCH', value: 'master'
             }
 
             steps {
@@ -181,7 +181,7 @@ pipeline {
                     DEPLOY_PROD = true
                     namespace = 'test-prod'
 
-                    echo "Deploying application ${IMAGE_NAME}:${DOCKER_TAG} to ${namespace} namespace"
+                    echo "Deploying application ${DOCKER_REG}/${IMAGE_NAME}:${BUILD_ID} to ${namespace} namespace"
                 }
             }
         }
