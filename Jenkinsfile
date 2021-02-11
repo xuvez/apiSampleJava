@@ -3,6 +3,8 @@ def curlUp (url) {
         echo "Waiting for response on ${url}"
         def result, err, status = sh (
             returnStatus: true,
+            returnStdout: true,
+            returnStderr: true,
             script: "curl --output /dev/null --silent --connect-timeout 5 --max-time 5 --retry 5 --retry-delay 5 --retry-max-time 30 --write-out \"%{http_code}\" ${url}"
         )
         echo "Result (return_code): ${result} - ${status} - ${err}"
