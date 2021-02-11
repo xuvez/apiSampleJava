@@ -71,12 +71,11 @@ pipeline {
     }
 
     parameters {
-        string (name: 'GIT_BRANCH', defaultValue: 'origin/testing',  description: 'Git branch to build')
+        string (name: 'GIT_BRANCH', defaultValue: 'origin/master',  description: 'Git branch to build')
     }
 
     agent any
 
-    // Pipeline stages
     stages {
 
         stage('Git clone') {
@@ -154,15 +153,7 @@ pipeline {
 
         stage('Deploy to staging') {
             steps {
-                script {
-                    echo "Deploying application ${DOCKER_REG}/${IMAGE_NAME}:${BUILD_ID} to ${namespace} namespace"
-                    sh script: "kubectl --namespace=${NAMESPACE_STA} set image deployment/${DEPLOYMENT_NAME} ${CONTAINER_NAME}=${DOCKER_REG}/${IMAGE_NAME}:${BUILD_ID}"
-
-                    // Wait until deployed or timeout
-                    timeout(time: 1, unit: 'MINUTES') {
-                        sh script: "kubectl --namespace=${NAMESPACE_STA} rollout status deployment ${DEPLOYMENT_NAME}"
-                    }
-                }
+                deployEnvironment(NAMESPACE_STA, DEPLOYMENT_NAME, CONTAINER_NAME, IMAGE)
             }
         }
 
@@ -198,15 +189,7 @@ pipeline {
             }
 
             steps {
-                script {
-                    echo "Deploying application ${DOCKER_REG}/${IMAGE_NAME}:${BUILD_ID} to ${namespace} namespace"
-                    sh script: "kubectl --namespace=${NAMESPACE_PROD} set image deployment/${DEPLOYMENT_NAME} ${CONTAINER_NAME}=${DOCKER_REG}/${IMAGE_NAME}:${BUILD_ID}"
-
-                    // Wait until deployed or timeout
-                    timeout(time: 1, unit: 'MINUTES') {
-                        sh script: "kubectl --namespace=${NAMESPACE_PROD} rollout status deployment ${DEPLOYMENT_NAME}"
-                    }
-                }
+                deployEnvironment(NAMESPACE_PROD, DEPLOYMENT_NAME, CONTAINER_NAME, IMAGE)
             }
         }
 
