@@ -136,7 +136,7 @@ pipeline {
 
                     // Wait until deployed or timeout
                     timeout(time: 1, unit: 'MINUTES') {
-                        sh script: "kubectl --namespace=${NAMESPACE_DEV} serollout status deployment ${DEPLOYMENT_NAME}"
+                        sh script: "kubectl --namespace=${NAMESPACE_DEV} rollout status deployment ${DEPLOYMENT_NAME}"
                     }
                 }
             }
