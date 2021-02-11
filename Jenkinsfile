@@ -46,11 +46,16 @@ pipeline {
         GIT_URL = 'https://github.com/xuvez/apiSampleJava.git'
 
         DOCKER_REG = 'eu.gcr.io/bq-it-1358'
-        CONTAINER_NAME = 'adidas'
+        CONTAINER_NAME = 'test'
+        DEPLOYMENT_NAME = 'test'
 
-        URL_DEV = 'http://'
-        URL_STA = ''
-        URL_PROD = ''
+        URL_DEV  = 'http://dev.test'
+        URL_STA  = 'http://sta.test'
+        URL_PROD = 'http://prod.test'
+
+        NAMESPACE_DEV  = 'test-dev'
+        NAMESPACE_STA  = 'test-sta'
+        NAMESPACE_PROD = 'test-prod'
 
         DEPLOY_PROD = false
     }
@@ -127,6 +132,12 @@ pipeline {
                     namespace = 'test-dev'
 
                     echo "Deploying application ${DOCKER_REG}/${IMAGE_NAME}:${BUILD_ID} to ${namespace} namespace"
+                    sh script: "kubectl --namespace=${NAMESPACE_DEV} set image deployment/${DEPLOYMENT_NAME} ${CONTAINER_NAME}=${DOCKER_REG}/${IMAGE_NAME}:${BUILD_ID}"
+
+                    // Wait until deployed or timeout
+                    timeout(time: 1, unit: 'MINUTES') {
+                        sh script: "kubectl --namespace=${NAMESPACE_DEV} serollout status deployment ${DEPLOYMENT_NAME}"
+                    }
                 }
             }
         }
