@@ -39,7 +39,7 @@ pipeline {
 
     // Some global default variables
     environment {
-        IMAGE_NAME = 'adidas'
+        IMAGE_NAME = 'test'
         CONTAINER_PORT = 8080
         TEST_PORT = 8081
 
