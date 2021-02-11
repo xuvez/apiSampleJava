@@ -24,6 +24,16 @@ def curlResponseCode (url) {
     }
 }
 
+def deployEnvironment(namespace, deployment_name, container_name, image) {
+    echo "Deploying application ${image} to ${namespace} namespace"
+    sh script: "kubectl --namespace=${namespace} set image deployment/${deployment_name} ${container_name}=${image}"
+
+    // Wait until deployed or timeout
+    timeout(time: 1, unit: 'MINUTES') {
+        sh script: "kubectl --namespace=${namespace} rollout status deployment ${deployment_name}"
+    }
+}
+
 pipeline {
 
     options {
@@ -46,22 +56,26 @@ pipeline {
         GIT_URL = 'https://github.com/xuvez/apiSampleJava.git'
 
         DOCKER_REG = 'eu.gcr.io/bq-it-1358'
-        CONTAINER_NAME = 'adidas'
+        CONTAINER_NAME = 'test'
+        DEPLOYMENT_NAME = 'test'
 
-        URL_DEV = 'http://'
-        URL_STA = ''
-        URL_PROD = ''
+        URL_DEV  = 'http://dev.test'
+        URL_STA  = 'http://sta.test'
+        URL_PROD = 'http://prod.test'
+
+        NAMESPACE_DEV  = 'test-dev'
+        NAMESPACE_STA  = 'test-sta'
+        NAMESPACE_PROD = 'test-prod'
 
         DEPLOY_PROD = false
     }
 
     parameters {
-        string (name: 'GIT_BRANCH', defaultValue: 'origin/testing',  description: 'Git branch to build')
+        string (name: 'GIT_BRANCH', defaultValue: 'origin/master',  description: 'Git branch to build')
     }
 
     agent any
 
-    // Pipeline stages
     stages {
 
         stage('Git clone') {
@@ -80,8 +94,11 @@ pipeline {
 
         stage('Build and tests') {
             steps {
+                script {
+                    IMAGE = "${DOCKER_REG}/${IMAGE_NAME}:${BUILD_ID}"
+                }
                 echo "Building application and Docker image"
-                sh "docker build -t ${DOCKER_REG}/${IMAGE_NAME}:${BUILD_ID} ."
+                sh "docker build -t ${IMAGE} ."
 
                 echo "Running tests"
 
@@ -89,12 +106,7 @@ pipeline {
                 sh "[ -z \"\$(docker ps -a | grep ${CONTAINER_NAME} 2>/dev/null)\" ] || docker rm -f ${CONTAINER_NAME}"
 
                 echo "Starting ${IMAGE_NAME} container"
-                sh "docker run --detach --name ${CONTAINER_NAME} --rm --publish ${TEST_PORT}:${CONTAINER_PORT} ${DOCKER_REG}/${IMAGE_NAME}:${BUILD_ID}"
-
-                script {
-                    // host_ip = sh(returnStdout: true, script: '/sbin/ip route | awk \'/default/ { print $3 ":${TEST_PORT}" }\'')
-                    host_ip = "localhost:${TEST_PORT}"
-                }
+                sh "docker run --detach --name ${CONTAINER_NAME} --rm --publish ${TEST_PORT}:${CONTAINER_PORT} ${IMAGE}"
             }
         }
 
@@ -103,11 +115,11 @@ pipeline {
             steps {
                 timeout(time: 1, unit: 'MINUTES') {
                     waitUntil {
-                        curlUp ("http://${host_ip}")
+                        curlUp ("localhost:${TEST_PORT}")
                     }
                 }
 
-                curlResponseCode("http://${host_ip}")
+                curlResponseCode("localhost:${TEST_PORT}")
             }
         }
 
@@ -116,51 +128,39 @@ pipeline {
                 echo "Stop and remove container"
                 sh "docker stop ${CONTAINER_NAME}"
 
-                echo "Pushing ${DOCKER_REG}/${IMAGE_NAME}:${BUILD_ID} image to registry"
-                sh "docker push ${DOCKER_REG}/${IMAGE_NAME}:${BUILD_ID}"
+                echo "Pushing ${IMAGE} image to registry"
+                sh "docker push ${IMAGE}"
             }
         }
 
         stage('Deploy to dev') {
             steps {
-                script {
-                    namespace = 'test-dev'
-
-                    echo "Deploying application ${DOCKER_REG}/${IMAGE_NAME}:${BUILD_ID} to ${namespace} namespace"
-                }
+                deployEnvironment(NAMESPACE_DEV, DEPLOYMENT_NAME, CONTAINER_NAME, IMAGE)
             }
         }
 
         stage('Dev tests') {
             steps {
-                echo "TODO: test"
-                // curlTest (namespace)
+                curlResponseCode(URL_DEV)
             }
         }
 
         stage('Deploy to staging') {
             steps {
-                script {
-                    namespace = 'test-sta'
-
-                    echo "Deploying application ${DOCKER_REG}/${IMAGE_NAME}:${BUILD_ID} to ${namespace} namespace"
-
-                }
+                deployEnvironment(NAMESPACE_STA, DEPLOYMENT_NAME, CONTAINER_NAME, IMAGE)
             }
         }
 
-        // Run the 3 tests on the deployed Kubernetes pod and service
         stage('Staging tests') {
             steps {
-                echo "TODO: test3"
-                //curlTest (namespace)
+                curlResponseCode(URL_STA)
             }
         }
 
         // Wait for user manual approval
         stage('Go for Production?') {
             when {
-                environment name: 'BRANCH', value: 'master'
+                expression { BRANCH == 'master' }
             }
 
             steps {
@@ -181,24 +181,17 @@ pipeline {
             }
 
             steps {
-                script {
-                    DEPLOY_PROD = true
-                    namespace = 'test-prod'
-
-                    echo "Deploying application ${DOCKER_REG}/${IMAGE_NAME}:${BUILD_ID} to ${namespace} namespace"
-                }
+                deployEnvironment(NAMESPACE_PROD, DEPLOYMENT_NAME, CONTAINER_NAME, IMAGE)
             }
         }
 
-        // Run the 3 tests on the deployed Kubernetes pod and service
         stage('Production tests') {
             when {
                 expression { DEPLOY_PROD == true }
             }
 
             steps {
-                echo "TODO: test"
-                //curlTest (namespace)
+                curlResponseCode(URL_PROD)
             }
         }
     }
