@@ -1,11 +1,11 @@
 def curlUp (url) {
     script {
         echo "Waiting for response on ${url}"
-        def result, status = sh (
+        def result, err, status = sh (
             returnStatus: true,
             script: "curl --output /dev/null --silent --connect-timeout 5 --max-time 5 --retry 5 --retry-delay 5 --retry-max-time 30 --write-out \"%{http_code}\" ${url}"
         )
-        echo "Result (return_code): ${result} - ${status}"
+        echo "Result (return_code): ${result} - ${status} - ${err}"
         return (result == 0)
     }
 }
