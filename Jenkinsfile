@@ -107,11 +107,6 @@ pipeline {
 
                 echo "Starting ${IMAGE_NAME} container"
                 sh "docker run --detach --name ${CONTAINER_NAME} --rm --publish ${TEST_PORT}:${CONTAINER_PORT} ${IMAGE}"
-
-                script {
-                    // host_ip = sh(returnStdout: true, script: '/sbin/ip route | awk \'/default/ { print $3 ":${TEST_PORT}" }\'')
-                    host_ip = "localhost:${TEST_PORT}"
-                }
             }
         }
 
@@ -120,11 +115,11 @@ pipeline {
             steps {
                 timeout(time: 1, unit: 'MINUTES') {
                     waitUntil {
-                        curlUp ("http://${host_ip}")
+                        curlUp ("localhost:${TEST_PORT}")
                     }
                 }
 
-                curlResponseCode("http://${host_ip}")
+                curlResponseCode("localhost:${TEST_PORT}")
             }
         }
 
