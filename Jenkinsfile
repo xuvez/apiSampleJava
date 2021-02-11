@@ -105,7 +105,7 @@ pipeline {
                     }
                 }
 
-                curlResponseCode("http://${host_ip}/hello")
+                curlResponseCode("http://${host_ip}")
             }
         }
 
