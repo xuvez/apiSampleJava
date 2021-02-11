@@ -9,6 +9,7 @@ def curlRun (url) {
                 script: "curl --output /dev/null --silent --connect-timeout 5 --max-time 5 --retry 5 --retry-delay 5 --retry-max-time 30 --write-out \"%{http_code}\" ${url}"
         )
         echo "Result (http_code): ${result}"
+        return (result == 200)
     }
 }
 
@@ -89,14 +90,14 @@ pipeline {
             steps {
                 timeout(time: 1, unit: 'MINUTES') {
                     waitUntil {
-                        script {
-                            def result = sh script: "nc -z -v localhost ${TEST_PORT}",
-                                         returnStatus: true
-                            return (result == 0)
-                        }
+                        // script {
+                        //     def result = sh script: "nc -z -v localhost ${TEST_PORT}",
+                        //                  returnStatus: true
+                        //     return (result == 0)
+                        // }
+                        curlRun ("http://${host_ip}")
                     }
                 }
-                curlRun ("http://${host_ip}")
             }
         }
 
