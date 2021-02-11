@@ -51,6 +51,8 @@ pipeline {
         URL_DEV = 'http://'
         URL_STA = ''
         URL_PROD = ''
+
+        DEPLOY_PROD = false
     }
 
     parameters {
