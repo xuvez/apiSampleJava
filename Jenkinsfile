@@ -47,7 +47,7 @@ pipeline {
         pollSCM '* * * * *'
     }
 
-    // Some global default variabless
+    // Some global default variables
     environment {
         IMAGE_NAME = 'test'
         CONTAINER_PORT = 8080
