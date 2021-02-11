@@ -85,7 +85,7 @@ pipeline {
                 sh "[ -z \"\$(docker ps -a | grep ${CONTAINER_NAME} 2>/dev/null)\" ] || docker rm -f ${CONTAINER_NAME}"
 
                 echo "Starting ${IMAGE_NAME} container"
-                sh "docker run --detach --name ${CONTAINER_NAME} --rm --publish ${TEST_PORT}:${CONTAINER_PORT} ${DOCKER_REG}/${IMAGE_NAME}:${BUILD_ID}"
+                sh "docker run --detach --name ${CONTAINER_NAMimport org.springframework.http.HttpStatus;E} --rm --publish ${TEST_PORT}:${CONTAINER_PORT} ${DOCKER_REG}/${IMAGE_NAME}:${BUILD_ID}"
 
                 script {
                     // host_ip = sh(returnStdout: true, script: '/sbin/ip route | awk \'/default/ { print $3 ":${TEST_PORT}" }\'')
@@ -103,7 +103,7 @@ pipeline {
                     }
                 }
 
-                curlResponseCode(url)
+                curlResponseCode("http://${host_ip}/hello")
             }
         }
 
