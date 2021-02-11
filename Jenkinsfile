@@ -18,7 +18,7 @@ def curlResponseCode (url) {
             script: "curl --output /dev/null --silent --connect-timeout 5 --max-time 5 --retry 5 --retry-delay 5 --retry-max-time 30 --write-out \"%{http_code}\" ${url}"
         )
         echo "Result (http_code): ${result}"
-        if (result != '200') {
+        if (result != '200' ) {
             error "Response Code is not 200"
         }
     }
@@ -115,7 +115,7 @@ pipeline {
                 sh "docker stop ${CONTAINER_NAME}"
 
                 echo "Pushing ${DOCKER_REG}/${IMAGE_NAME}:${BUILD_ID} image to registry"
-                sh "${WORKSPACE}/build.sh --push --registry ${DOCKER_REG} --tag ${BUILD_ID} --docker_usr ${DOCKER_USR} --docker_psw ${DOCKER_PSW}"
+                sh "docker push ${DOCKER_REG}/${IMAGE_NAME}:${BUILD_ID}"
             }
         }
 
@@ -124,7 +124,7 @@ pipeline {
                 script {
                     namespace = 'test-dev'
 
-
+                    error "Seguir"
                 }
             }
         }
